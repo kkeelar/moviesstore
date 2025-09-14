@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Movie, Review 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
+
 
 
 # Create your views here.
@@ -68,3 +70,25 @@ def delete_review(request, id, review_id):
         user=request.user)
     review.delete()
     return redirect('movies.show', id=id)
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Review
+
+@login_required
+def like_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    if request.user in review.likes.all():
+        review.likes.remove(request.user)   # unlike
+    else:
+        review.likes.add(request.user)      # like
+    return redirect('movies.show', id=review.movie.id)
+
+def top_comments(request):
+    template_data = {
+        'title': 'Top Comments',
+        'comments': Review.objects.select_related('user', 'movie')
+                                  .annotate(num_likes=Count('likes'))
+                                  .order_by('-num_likes', '-date')
+    }
+    return render(request, 'movies/top_comments.html', {'template_data': template_data})

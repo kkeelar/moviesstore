@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Top Comments</h2>
+  <hr />
+  {% for comment in template_data.comments %}
+    <div class="card mb-3 p-3">
+      <p><b>{{ comment.user.username }}</b> on <i>{{ comment.movie.name }}</i></p>
+      <p>{{ comment.comment }}</p>
+      <p>👍 {{ comment.num_likes }} likes</p>
+    </div>
+  {% empty %}
+    <p>No comments yet.</p>
+  {% endfor %}
+</div>
+{% endblock content %}
