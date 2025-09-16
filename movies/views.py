@@ -92,3 +92,28 @@ def top_comments(request):
                                   .order_by('-num_likes', '-date')
     }
     return render(request, 'movies/top_comments.html', {'template_data': template_data})
+
+
+@login_required
+def report_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+
+    # If the user hasn’t reported yet, mark as reported
+    if request.user not in review.reports.all():
+        review.reports.add(request.user)
+        review.is_removed = True   # 🚩 remove immediately
+        review.save()
+
+    return redirect('movies.show', id=review.movie.id)
+
+
+
+def top_comments(request):
+    template_data = {
+        'title': 'Top Comments',
+        'comments': Review.objects.filter(is_removed=False)
+                                  .select_related('user', 'movie')
+                                  .annotate(num_likes=Count('likes'))
+                                  .order_by('-num_likes', '-date')
+    }
+    return render(request, 'movies/top_comments.html', {'template_data': template_data})
