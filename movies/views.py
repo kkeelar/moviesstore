@@ -84,16 +84,6 @@ def like_review(request, review_id):
         review.likes.add(request.user)      # like
     return redirect('movies.show', id=review.movie.id)
 
-def top_comments(request):
-    template_data = {
-        'title': 'Top Comments',
-        'comments': Review.objects.select_related('user', 'movie')
-                                  .annotate(num_likes=Count('likes'))
-                                  .order_by('-num_likes', '-date')
-    }
-    return render(request, 'movies/top_comments.html', {'template_data': template_data})
-
-
 @login_required
 def report_review(request, review_id):
     review = get_object_or_404(Review, id=review_id)
