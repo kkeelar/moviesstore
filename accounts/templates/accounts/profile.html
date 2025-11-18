@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<div class="p-3 mt-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow p-3 mb-4 rounded">
+          <div class="card-body">
+            <h2>My Profile</h2>
+            <hr />
+            <div class="text-center mb-3">
+              {% if template_data.profile.avatar %}
+                <img src="{{ template_data.profile.avatar.url }}" alt="Profile picture" class="rounded-circle" style="width: 140px; height: 140px; object-fit: cover;">
+              {% else %}
+                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 140px; height: 140px; font-size: 40px; color: #888;">
+                  <i class="fa fa-user"></i>
+                </div>
+              {% endif %}
+            </div>
+            <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              {{ template_data.form.as_p }}
+              <button type="submit" class="btn bg-dark text-white">Save</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
