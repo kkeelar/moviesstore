@@ -62,3 +62,29 @@ main {
   object-fit: cover;
 }
 
+.restricted-card {
+  position: relative;
+}
+
+.blur-image {
+  filter: blur(2px) grayscale(60%);
+}
+
+.restricted-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.rating-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+}

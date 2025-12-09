@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Movie, Review 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from accounts.models import Profile
 
 
 
@@ -17,6 +18,7 @@ def index(request):
     template_data = {}
     template_data['title'] = 'Movies'
     template_data['movies'] = movies
+    template_data['user_max_rating'] = _get_user_max_rating(request.user)
     return render(request, 'movies/index.html',
                   {'template_data': template_data})
 
@@ -71,10 +73,6 @@ def delete_review(request, id, review_id):
     review.delete()
     return redirect('movies.show', id=id)
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Review
-
 @login_required
 def like_review(request, review_id):
     review = get_object_or_404(Review, id=review_id)
@@ -107,3 +105,10 @@ def top_comments(request):
                                   .order_by('-num_likes', '-date')
     }
     return render(request, 'movies/top_comments.html', {'template_data': template_data})
+
+
+def _get_user_max_rating(user):
+    if not user.is_authenticated:
+        return None
+    profile, _ = Profile.objects.get_or_create(user=user)
+    return profile.max_content_rating

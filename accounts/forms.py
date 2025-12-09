@@ -27,7 +27,13 @@ class CustomUserCreationForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['avatar']
+        fields = ['avatar', 'max_content_rating']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            existing_classes = field.widget.attrs.get('class', '')
+            field.widget.attrs['class'] = (existing_classes + ' form-control').strip()
 
     def clean_avatar(self):
         avatar = self.cleaned_data.get('avatar')
